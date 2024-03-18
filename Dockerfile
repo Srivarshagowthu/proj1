@@ -1,16 +1,20 @@
-#Stage 1: Build the application
-FROM node:alpine3.18 as build
-WORKDIR /app
-COPY package.json .
-RUN npm install
-COPY . .
-RUN npm run build
+# Use Node.js LTS version as base image
+FROM node:lts AS development
 
-# Stage 2: Serve the built application with nginx
-FROM nginx:1.23.0-alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf *
-COPY --from=build /app/build .
-EXPOSE 80
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
-CMD []
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY src/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY src/ ./
+
+# Expose the port the app runs on (default is 3000 for React)
+EXPOSE 3000
+
+# Command to start the development server
+CMD ["npm", "run", "dev"]
