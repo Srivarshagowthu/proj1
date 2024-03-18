@@ -2,7 +2,7 @@
 FROM node:lts AS development
 
 # Set working directory
-WORKDIR /app
+WORKDIR /
 
 # Copy package.json and package-lock.json
 COPY src/package*.json ./
